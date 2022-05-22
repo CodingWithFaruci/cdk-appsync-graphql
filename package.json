@@ -1,0 +1,44 @@
+{
+    "name": "cdk-appsync-graphql",
+    "version": "0.1.0",
+    "bin": {
+        "cdk-appsync-graphql": "bin/cdk-appsync-graphql.js"
+    },
+    "scripts": {
+        "lint": "npx eslint **/*.ts --fix --quiet",
+        "build": "npx rimraf dist & tsc",
+        "build-w": "npx rimraf dist & webpack",
+        "watch": "tsc -w",
+        "test": "jest --passWithNoTests",
+        "diff-dev": "npx cdk diff cdk-appsync-graphql-dev --ci --require-approval never --no-asset-metadata",
+        "diff-tst": "npx cdk diff cdk-appsync-graphql-tst --ci --require-approval never --no-asset-metadata",
+        "diff-prd": "npx cdk diff cdk-appsync-graphql-prd --ci --require-approval never --no-asset-metadata",
+        "deploy-dev": "npx cdk deploy cdk-appsync-graphql-dev --ci --require-approval never --no-asset-metadata",
+        "deploy-tst": "npx cdk deploy cdk-appsync-graphql-tst --ci --require-approval never --no-asset-metadata",
+        "deploy-prd": "npx cdk deploy cdk-appsync-graphql-prd --ci --require-approval never --no-asset-metadata"
+    },
+    "devDependencies": {
+        "@types/jest": "^26.0.10",
+        "@types/node": "^17.0.29",
+        "@typescript-eslint/eslint-plugin": "^5.20.0",
+        "@typescript-eslint/parser": "^5.20.0",
+        "aws-cdk": "2.21.1",
+        "eslint": "^8.14.0",
+        "eslint-config-airbnb-base": "^15.0.0",
+        "eslint-config-airbnb-typescript": "^17.0.0",
+        "eslint-plugin-jest": "^26.1.5",
+        "jest": "^26.4.2",
+        "jest-sonar": "^0.2.12",
+        "ts-jest": "^26.2.0",
+        "ts-loader": "^9.2.8",
+        "ts-node": "^9.0.0",
+        "typescript": "~3.9.7",
+        "webpack": "^5.72.0",
+        "webpack-cli": "^4.9.2"
+    },
+    "dependencies": {
+        "aws-cdk-lib": "2.21.1",
+        "constructs": "^10.0.0",
+        "source-map-support": "^0.5.16"
+    }
+}
