@@ -6,8 +6,7 @@
     },
     "scripts": {
         "lint": "npx eslint **/*.ts --fix --quiet",
-        "build": "npx rimraf dist & tsc",
-        "build-w": "npx rimraf dist & webpack",
+        "build": "npx rimraf dist & webpack",
         "watch": "tsc -w",
         "test": "jest --passWithNoTests",
         "diff-dev": "npx cdk diff cdk-appsync-graphql-dev --ci --require-approval never --no-asset-metadata",
@@ -19,26 +18,28 @@
     },
     "devDependencies": {
         "@types/jest": "^26.0.10",
-        "@types/node": "^17.0.29",
-        "@typescript-eslint/eslint-plugin": "^5.20.0",
-        "@typescript-eslint/parser": "^5.20.0",
-        "aws-cdk": "2.21.1",
-        "eslint": "^8.14.0",
+        "@types/node": "^17.0.35",
+        "@typescript-eslint/eslint-plugin": "^5.25.0",
+        "@typescript-eslint/parser": "^5.25.0",
+        "aws-cdk": "^2.25.0",
+        "aws-cdk-lib": "^2.25.0",
+        "constructs": "^10.1.14",
+        "eslint": "^8.16.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-airbnb-typescript": "^17.0.0",
-        "eslint-plugin-jest": "^26.1.5",
+        "eslint-plugin-jest": "^26.2.2",
+        "fork-ts-checker-webpack-plugin": "^7.2.11",
         "jest": "^26.4.2",
         "jest-sonar": "^0.2.12",
         "ts-jest": "^26.2.0",
-        "ts-loader": "^9.2.8",
+        "ts-loader": "^9.3.0",
         "ts-node": "^9.0.0",
         "typescript": "~3.9.7",
         "webpack": "^5.72.0",
         "webpack-cli": "^4.9.2"
     },
     "dependencies": {
-        "aws-cdk-lib": "2.21.1",
-        "constructs": "^10.0.0",
+        "@aws-cdk/aws-appsync-alpha": "^2.25.0-alpha.0",
         "source-map-support": "^0.5.16"
     }
 }

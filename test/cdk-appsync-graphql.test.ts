@@ -3,16 +3,38 @@ import { Template } from 'aws-cdk-lib/assertions';
 import devEnvironmentConfig from '../bin/dev-stack-config';
 import * as Stack from '../lib/cdk-appsync-graphql-stack';
 
-// example test.
-test('SQS Queue Created', () => {
+test('Stack Template', () => {
   const app = new cdk.App();
-  // WHEN
   const stack = new Stack.CdkAppsyncGraphqlStack(app, 'MyTestStack', devEnvironmentConfig);
-  // THEN
   const template = Template.fromStack(stack);
 
-  template.hasResourceProperties('AWS::SQS::Queue', {
-    VisibilityTimeout: 300,
-    QueueName: 'testName',
+  template.hasResourceProperties('AWS::AppSync::GraphQLApi', {
+    Name: 'appsync-api-dev',
+    AuthenticationType: 'API_KEY',
+    AdditionalAuthenticationProviders: [
+      {
+        AuthenticationType: 'AMAZON_COGNITO_USER_POOLS',
+        UserPoolConfig: {
+          UserPoolId: 'id',
+        },
+      },
+    ],
+    LogConfig: {
+      FieldLogLevel: 'ALL',
+    },
+  });
+
+  template.hasResourceProperties('AWS::Lambda::Function', {
+    FunctionName: 'lambda-appsync-resolver-dev',
+    Handler: 'index.handler',
+    MemorySize: 128,
+    Runtime: 'nodejs16.x',
+    Timeout: 30,
+  });
+
+  template.hasResourceProperties('AWS::AppSync::DataSource', {
+    Name: 'appsyncdatasourcedev',
+    Type: 'AWS_LAMBDA',
+    Description: 'Adds lambda resolver as datasource for appsync graphql api',
   });
 });
