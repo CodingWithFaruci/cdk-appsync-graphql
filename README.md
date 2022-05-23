@@ -1,10 +1,6 @@
-# AWS CDK TypeScript Bootstrap
+# AWS CDK Appsync GraphQL (TypeScript)
 
-This repository is a template for bootstrapping new AWS CDK TypeScript projects.
-By running the GitHub Actions workflow a new repository will be created containing configuration for Jest, ESLint and Webpack.
-Additonally it will contain a GitHub Actions CDK deployment pipeline using the AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in this repository.
-
-For usage run the create workflow and enter new stackname.
+![alt text](./img/cdkAppsyncGraphQL.png)
 
 ## Useful commands
 
