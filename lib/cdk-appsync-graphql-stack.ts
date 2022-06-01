@@ -1,4 +1,4 @@
-import { Duration, Expiration, Stack } from 'aws-cdk-lib';
+import { Aws, Duration, Expiration, Stack } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as kms from 'aws-cdk-lib/aws-kms';
 import * as cognito from 'aws-cdk-lib/aws-cognito';
@@ -6,10 +6,12 @@ import * as dynamodb from 'aws-cdk-lib/aws-dynamodb';
 import * as appsync from '@aws-cdk/aws-appsync-alpha';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as logs from 'aws-cdk-lib/aws-logs';
+import * as cert from 'aws-cdk-lib/aws-certificatemanager';
+import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 // extended stack environment props
 import { ICdkAppsyncGraphqlStackProps } from '../bin/stack-environment-types';
-import * as cert from 'aws-cdk-lib/aws-certificatemanager';
+import { REQUEST_TEMPLATE, RESPONSE_TEMPLATE } from './sqs-config';
 
 export class CdkAppsyncGraphqlStack extends Stack {
   constructor(scope: Construct, id: string, props: ICdkAppsyncGraphqlStackProps) {
@@ -96,8 +98,8 @@ export class CdkAppsyncGraphqlStack extends Stack {
     table.grantReadWriteData(resolverLambda);
 
     // adding resolver lambda as datasource to appsync graphql api.
-    const resolverDataSource = appsyncApi.addLambdaDataSource(
-      'resolver-datasource',
+    const lambdaResolverDataSource = appsyncApi.addLambdaDataSource(
+      'lambda-resolver-datasource',
       resolverLambda,
       {
         name: `appsync-datasource-${props.environment}`,
@@ -106,9 +108,27 @@ export class CdkAppsyncGraphqlStack extends Stack {
     );
 
     // adding resolvers for datasource
-    resolverDataSource.createResolver({
-      typeName: 'account',
-      fieldName: 'account',
+    lambdaResolverDataSource.createResolver({
+      typeName: 'Query',
+      fieldName: 'Account',
+    });
+
+    const resolverSqs = new sqs.Queue(this, 'sqs-appsync-resolver', {
+      queueName: `sqs-appsync-resolver-${props.environment}`,
+    });
+
+    // adding resolver sqs as datasource to appsync graphql api.
+    const sqsResolverDataSource = appsyncApi.addHttpDataSource('sqs-resolver-datasource', `https://sqs.${Aws.REGION}.amazonaws.com`, {
+      authorizationConfig: { signingRegion: Aws.REGION, signingServiceName: 'sqs' },
+    });
+    resolverSqs.grantSendMessages(sqsResolverDataSource);
+
+    // adding resolvers for datasource
+    sqsResolverDataSource.createResolver({
+      typeName: 'Mutation',
+      fieldName: 'Account',
+      requestMappingTemplate: appsync.MappingTemplate.fromString(REQUEST_TEMPLATE(Aws.ACCOUNT_ID, resolverSqs)),
+      responseMappingTemplate: appsync.MappingTemplate.fromString(RESPONSE_TEMPLATE),
     });
   }
 }
